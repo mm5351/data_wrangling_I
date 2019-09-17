@@ -1,0 +1,17 @@
+---
+title: "Data Import"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+
+##Load in a dataset 
+
+```{r}
+##reads in a dataset
+```
