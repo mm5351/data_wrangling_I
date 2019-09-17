@@ -14,4 +14,6 @@ library(tidyverse)
 
 ```{r}
 ##reads in a dataset
+litters_data = read_csv(file = "./data/FAS_litters.csv")
+litters_data = janitor::clean_names(litters_data)
 ```
