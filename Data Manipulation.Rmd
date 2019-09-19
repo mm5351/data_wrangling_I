@@ -82,6 +82,36 @@ drop_na(litters_data)
 ##Only drops where gd0_weight is missing
 drop_na(litters_data, gd0_weight)
 ```
+##Mutate
+```{r}
+##Added column for weight gain at end of dataset that is the difference between the two variables
+mutate(
+  litters_data, 
+  wt_gain = gd18_weight - gd0_weight)
 
+##Weight gain variable added and group name variable is all lowercase
+mutate(
+  litters_data, 
+  wt_gain = gd18_weight - gd0_weight, 
+  group = str_to_lower(group))
+
+##Changed group name to all uppercase
+mutate(
+  litters_data, 
+  wt_gain = gd18_weight - gd0_weight, 
+  group = str_to_upper(group))
+```
+
+##Arrange
+```{r}
+##Pups born alive variable is arranged in order according to the number of pups born alive
+arrange(litters_data, pups_born_alive)
+
+##Arrange in opposite order, add descencing --> desc
+arrange(litters_data, desc(pups_born_alive))
+
+##Arrange two different variables
+arrange(litters_data, pups_born_alive, gd0_weight)
+```
 
 
