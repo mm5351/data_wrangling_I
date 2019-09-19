@@ -5,24 +5,83 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
 ```
 
-## R Markdown
+##Import datasets
+```{r}
+litters_data = read_csv(file = "./data/FAS_litters.csv")
+litters_data = janitor::clean_names(litters_data)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+pups_data = read_csv("./data/FAS_pups.csv")
+pups_data = janitor::clean_names(pups_data)
 ```
 
-## Including Plots
+##Selecting columns!!!
+```{r}
+select(litters_data, group, litter_number)
 
-You can also embed plots, for example:
+select(litters_data, group, litter_number, gd0_weight)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+select(litters_data, litter_number, gd0_weight, starts_with("pups"))
+
+##Litter number, groups, then everything else
+select(litters_data, litter_number, group, everything())
+
+##Has everything but group
+select(litters_data, -group)
+
+##Number and then everything between weight and pups born alive
+select(litters_data, litter_number, gd0_weight:pups_born_alive)
+
+##Rename group to GROUP in the select function, and select group and litter number
+select(litters_data, GROUP = group, litter_number)
+
+##Rename function only renames the group variable to GROUP, it does not select the variables 
+rename(litters_data, GROUP = group)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+##Filtering!!!
+```{r}
+##Retained all of the columns, but rows are only those for Con7; == tries to ask a question of if the two things are equal to each other; single = is assigning one thing to equal another.
+filter(litters_data, group == "Con7")
+
+filter(litters_data, gd_of_birth == 20)
+
+##Pups born less than 20
+filter(litters_data, gd_of_birth < 20)
+
+filter(litters_data, gd_of_birth >= 20)
+
+##Returns litters with only those that have pups born alive less than 6
+filter(litters_data, pups_born_alive < 6)
+
+filter(litters_data, group == "Con7", pups_born_alive < 6)
+
+## ! means not equal to. can put outside of logical function and it negates everything inside the function 
+
+## | represents or
+filter(litters_data, group == "Con7" | group == "Mod8")
+
+##Preferred method of or
+filter(litters_data, group %in% c("Con7", "Mod8"))
+
+##Filtering with range
+filter(litters_data, pups_born_alive >= 4, pups_born_alive <= 6)
+
+##Can check if variables are lt, equal or gt others
+filter(litters_data, gd0_weight > gd18_weight)
+
+##Not missing--dont use; use drop_na as seen below
+filter(litters_data, is.na(gd0_weight))
+
+##Only complete cases; drops all missing
+drop_na(litters_data)
+
+##Only drops where gd0_weight is missing
+drop_na(litters_data, gd0_weight)
+```
+
+
+
