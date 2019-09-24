@@ -4,8 +4,56 @@ author: "Martha Mulugeta"
 date: "9/24/2019"
 output: github_document
 ---
+install.packages("tidyr")
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
 ```
 
+##Wide to long
+```{r}
+pulse_data = 
+  haven::read_sas("./data/public_pulse_data.sas7bdat") %>% 
+  janitor::clean_names() 
+  
+pulse_tidy_data = 
+  pivot_longer(
+    pulse_data, 
+    bdi_score_bl:bdi_score_12m,
+    names_to = "visit", 
+    names_prefix = "bdi_score_",
+    values_to = "bdi") %>% 
+
+ select(id, visit, everything()) %>%
+  mutate(
+    visit = replace(visit, visit == "bl", "00m"),
+    visit = factor(visit, levels = str_c(c("00", "01", "06", "12"), "m"))) %>%
+  arrange(id, visit)
+
+print(pulse_data, n = 12)
+```
+
+##Separate in litters 
+```{r}
+read_csv("./data/FAS_litters.csv") %>% 
+  janitor::clean_names() %>%
+  separate(col = group, into = c("dose", "day_of_tx"), 3)
+```
+
+##Pivot_wider, usually just for presentation purposes
+```{r}
+analysis_result = tibble(
+  group = c("treatment", "treatment", "placebo", "placebo"),
+  time = c("pre", "post", "pre", "post"),
+  mean = c(4, 8, 3.5, 4)
+)
+
+##Variable names now time, cell values now means 
+pivot_wider(
+  analysis_result,
+  names_from = time,
+  values_from = mean
+)
+```
